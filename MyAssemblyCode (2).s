@@ -40,11 +40,11 @@ start:
     ; ((index - 1) / 13) + 1
     ; result = card value,  remainder = suit index
     mov ax, dx          ; load the index into ax to prepare for division
-    ;dec ax
+    dec ax
     mov dx, 0
     mov bx, 13
     div bx
-    ;inc dx
+    inc dx
     
     ; loop to test
     jmp start
