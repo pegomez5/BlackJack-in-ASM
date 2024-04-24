@@ -1,3 +1,54 @@
+start:
+    ; Game initialization
+    call shuffle_deck
+    call deal_initial_hands
+
+    ; Main game loop
+game_loop:
+    ; Player's turn
+    call player_turn
+
+    ; Computer's turn
+    call computer_turn
+
+    ; Determine winner and update money
+    call determine_winner
+
+    ; Ask user to play next turn
+    ; Implement input/output handling for user interaction
+
+    ; Check game end conditions
+    ; If end condition met, jump to game_end
+    jmp game_loop
+
+game_end:
+    ; Display winner and final scores
+    ; Implement input/output handling for user interaction
+
+    ; Exit program
+
+shuffle_deck:
+    ; Implement deck shuffling algorithm
+
+deal_initial_hands:
+    ; Implement dealing cards to player and computer
+
+player_turn:
+    ; Implement player's turn logic
+    ; Allow player to hit, stand, or forfeit
+    ; Update player's hand and total
+
+computer_turn:
+    ; Implement computer's turn logic
+    ; Use a simple strategy to determine computer's actions
+    ; Update computer's hand and total
+
+determine_winner:
+    ; Compare player and computer totals
+    ; Determine winner and update money accordingly
+
+
+
 ; CS 274
 ; Pedro Gomez
 ; Lab 7: randomized indeces
