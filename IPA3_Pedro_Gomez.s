@@ -1,9 +1,8 @@
 start:
     ; Game initialization
-    call shuffle_deck
     call deal_initial_hands
 
-    ; Main game loop
+; Main game loop
 game_loop:
     ; Player's turn
     call player_turn
@@ -26,9 +25,6 @@ game_end:
     ; Implement input/output handling for user interaction
 
     ; Exit program
-
-shuffle_deck:
-    ; Implement deck shuffling algorithm
 
 deal_initial_hands:
     ; Implement dealing cards to player and computer
@@ -69,7 +65,7 @@ hand: db [0xff, 0x04]
 
 ; places new random index in the dx
 def lehmer_index_generator {
-
+    mov dx, 0
     ; store curr_x in ax
     mov si, offset curr_X
     mov ax, word[si]
