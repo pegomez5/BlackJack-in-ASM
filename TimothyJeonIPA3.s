@@ -51,6 +51,7 @@ def store_card {
 ;3.1. Representing cards, bets and wins on screen
 ;Gives card value from the random index
 def getCardValue {
+    mov si, dx
     mov ax, dx ;moves remainder of dx to ax
     mov dx, 0 ;moves 0 to dx
     mov bx, 13 ;moves 13 to bx
