@@ -20,6 +20,8 @@ def betInput {
 ;3.1. Representing cards, bets and wins on screen
 ;Gets the random index
 def randomIndex {
+    mov dx, 0
+    
     mov si, offset X_k ;moves offset of X_k to si
     mov ax, word [si] ;moves value of X_k to ax
     mov bp, offset m ;moves offset of m to bp
