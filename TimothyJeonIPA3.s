@@ -8,10 +8,15 @@ a: dw 11 ;a value that is odd co-prime to m
 m: dw 4133 ;a large prime
 playerBet: dw 55 ;hexadecimal value of 55 is 37 shown in memory
 playerWins: dw 0
+computerWins: dw 0
 playerHandValue: db 0
 computerHandValue: db 0
 money: dw 1000
 deck: db [0x00, 0x34]
+
+; Messages
+bet_msg: db "Enter bet amount ( $10 - $1000 ): "
+
 
 def betInput {
     mov ah, 0x01
