@@ -16,6 +16,9 @@ deck: db [0x00, 0x34]
 
 ; Messages
 bet_msg: db "Enter bet amount ( $10 - $1000 ): "
+lost_msg: "You lost :("
+won_msg: "You won!"
+consent_msg: "Continue playing? (Y/N)"
 
 
 def betInput {
