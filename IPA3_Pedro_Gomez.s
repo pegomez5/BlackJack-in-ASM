@@ -57,6 +57,27 @@ def computerTurn {
     ret
 }
 
+compareHandValues:
+    ; Load player and computer hand values
+    mov al, [offset playerHandValue]
+    mov bl, [offset computerHandValue]
+
+    ; Check if either player or computer has busted (gone over 21)
+    cmp al, 21
+    jg playerBusted     ; If player has busted, computer wins
+    cmp bl, 21
+    jg computerBusted   ; If computer has busted, player wins
+
+    ; Compare player and computer hand values
+    cmp al, bl
+    jl computerWins    ; If computer has higher hand value, computer wins
+    jg playerWins      ; If player has higher hand value, player wins
+
+    ; If the hand values are equal, it's a draw
+    ; You can handle the draw condition here if needed
+
+    ret
+
 def determineWinner {
     mov al, byte [offset playerHandValue]
     mov bl, byte [offset computerHandValue]
