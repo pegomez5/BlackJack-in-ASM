@@ -7,19 +7,14 @@ X_k: dw 1 ;accumulated value from prior iteration
 a: dw 11 ;a value that is odd co-prime to m
 m: dw 4133 ;a large prime
 playerBet: dw 55 ;hexadecimal value of 55 is 37 shown in memory
+computerBet: dw 100
 playerWins: dw 0
 computerWins: dw 0
 playerHandValue: db 0
 computerHandValue: db 0
-money: dw 1000
+playerMoney: dw 1000
+computerMoney: dw 1000
 deck: db [0x00, 0x34]
-
-; Messages
-bet_msg: db "Enter bet amount ( $10 - $1000 ): "
-lost_msg: db "You lost :("
-won_msg: db "You won!"
-consent_msg: db "Continue playing? (Y/N)"
-
 
 def betInput {
     mov ah, 0x01
@@ -111,7 +106,11 @@ playerWin:
 computerWin:
     inc word [offset computerWins]
     
-def determineWinner {
+playerWinsGame:
+
+computerWinsGame:
+    
+def compareHandValues {
     mov al, byte [offset playerHandValue]
     mov bl, byte [offset computerHandValue]
     
@@ -128,16 +127,20 @@ def determineWinner {
     ret
 }
 
+def determineWinner {
+    mov ax, word [offset playerWins]
+    mov bx, word [offset computerWins]
+    cmp ax, bx
+    jg playerWinsGame
+    jl computerWinsGame
+}
+
     
     
 start:
     call playerTurn
     call computerTurn
-    call determineWinner
-
-
-
-    
+    call compareHandValues
     
     
     
