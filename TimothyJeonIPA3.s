@@ -22,7 +22,7 @@ consent_msg: db "Continue playing? (Y/N)"
 lost_msg: db "You lost :("
 won_msg: db "You won!"
 
-def betInput 
+def betInput {
     ; Ask user for bet amount
     mov ah, 0x13
     mov cx, 23
@@ -31,8 +31,9 @@ def betInput
     mov bp, offset bet_msg
     int 0x10
 
-    
-    mov word [offset playerBet], ax
+    mov ah, 0x0a
+    int 0x21
+    ;mov word [offset playerBet], ax
     ret
 }
 
