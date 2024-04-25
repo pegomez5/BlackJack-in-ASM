@@ -32,6 +32,7 @@ def betInput {
     int 0x10
 
     mov ah, 0x0a
+    mov dx, offset playerBet
     int 0x21
     ;mov word [offset playerBet], ax
     ret
