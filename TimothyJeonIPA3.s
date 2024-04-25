@@ -36,6 +36,17 @@ def randomIndex {
     ret
 }
 
+; Stores card value
+def store_card {
+    MOV bl, 16
+    MUL bl
+    ADD ax, dx
+    mov di, offset deck
+    add si, di
+    mov byte [si], al
+    ret
+}
+
 ;3.1. Representing cards, bets and wins on screen
 ;Gives card value from the random index
 def getCardValue {
@@ -52,6 +63,11 @@ def playerTurn {
     call randomIndex
     mov word [offset playerHand], ax
     call getCardValue
+
+    call betInput
+    call randomIndex
+    call getCardValue
+    call store_card
     ret
 }
 
@@ -59,6 +75,11 @@ def computerTurn {
     call randomIndex
     mov word [offset playerHand], ax
     call getCardValue
+
+    call betInput
+    call randomIndex
+    call getCardValue
+    call store_card
     ret
 }
 
