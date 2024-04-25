@@ -8,6 +8,8 @@ a: dw 11 ;a value that is odd co-prime to m
 m: dw 4133 ;a large prime
 playerBet: dw 55 ;hexadecimal value of 55 is 37 shown in memory
 playerWins: dw 0
+playerHand: dw 0
+computerHand: dw 0
 money: dw 1000
 
 def betInput {
@@ -47,12 +49,16 @@ def getCardValue {
 }
 
 def playerTurn {
-
+    call randomIndex
+    mov word [offset playerHand], ax
+    call getCardValue
     ret
 }
 
 def computerTurn {
-
+    call randomIndex
+    mov word [offset playerHand], ax
+    call getCardValue
     ret
 }
 
