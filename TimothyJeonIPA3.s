@@ -94,8 +94,34 @@ def computerTurn {
     ret
 }
 
-def determineWinner {
+playerLost:
+    
+    
+computerLost:
 
+    
+    
+playerWin:
+    inc word [offset playerWins]
+    
+    
+computerWin:
+    inc word [offset computerWins]
+    
+def determineWinner {
+    mov al, byte [offset playerHandValue]
+    mov bl, byte [offset computerHandValue]
+    
+    ;check if gone over 21
+    cmp al, 21
+    jg playerLost
+    cmp bl, 21
+    jg computerLost
+    
+    ;cmp both player and computer
+    cmp al, bl
+    jg playerWin
+    jl computerWin
     ret
 }
 
