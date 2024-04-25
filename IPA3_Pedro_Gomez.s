@@ -29,20 +29,50 @@ game_end:
 deal_initial_hands:
     ; Implement dealing cards to player and computer
 
-player_turn:
-    ; Implement player's turn logic
-    ; Allow player to hit, stand, or forfeit
-    ; Update player's hand and total
+def playerTurn {
+    call betInput
+    call randomIndex
+    call getCardValue
+    add byte [offset playerHandValue], dl
+    MOV bl, 16
+    MUL bl
+    ADD ax, dx
+    mov di, offset deck
+    add si, di
+    mov byte [si], al
+    ret
+}
 
-computer_turn:
-    ; Implement computer's turn logic
-    ; Use a simple strategy to determine computer's actions
-    ; Update computer's hand and total
+def computerTurn {
+    call betInput
+    call randomIndex
+    call getCardValue
+    add byte [offset computerHandValue], dl
+    MOV bl, 16
+    MUL bl
+    ADD ax, dx
+    mov di, offset deck
+    add si, di
+    mov byte [si], al
+    ret
+}
 
-determine_winner:
-    ; Compare player and computer totals
-    ; Determine winner and update money accordingly
-
+def determineWinner {
+    mov al, byte [offset playerHandValue]
+    mov bl, byte [offset computerHandValue]
+    
+    ;check if gone over 21
+    cmp al, 21
+    jg playerLost
+    cmp bl, 21
+    jg computerLost
+    
+    ;cmp both player and computer
+    cmp al, bl
+    jg playerWin
+    jl computerWin
+    ret
+}
 
 
 ; CS 274
