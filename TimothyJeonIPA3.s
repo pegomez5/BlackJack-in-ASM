@@ -9,6 +9,9 @@ m: dw 4133 ;a large prime
 playerBet: dw 55 ;hexadecimal value of 55 is 37 shown in memory
 playerWins: dw 0
 money: dw 1000
+deck: db [0x00, 0x34]
+hand1: db [0xff, 0x04]
+hand2: db [0xff, 0x04]
 
 def betInput {
     mov ah, 0x01
@@ -34,6 +37,17 @@ def randomIndex {
     ret
 }
 
+; Stores card value
+def store_card {
+    MOV bl, 16
+    MUL bl
+    ADD ax, dx
+    mov di, offset deck
+    add si, di
+    mov byte [si], al
+    ret
+}
+
 ;3.1. Representing cards, bets and wins on screen
 ;Gives card value from the random index
 def getCardValue {
@@ -47,12 +61,18 @@ def getCardValue {
 }
 
 def playerTurn {
-
+    call betInput
+    call randomIndex
+    call getCardValue
+    call store_card
     ret
 }
 
 def computerTurn {
-
+    call betInput
+    call randomIndex
+    call getCardValue
+    call store_card
     ret
 }
 
@@ -65,9 +85,6 @@ def determineWinner {
 
 
 start:
-    call betInput
-    call randomIndex
-    call getCardValue
     
     
 loop:
