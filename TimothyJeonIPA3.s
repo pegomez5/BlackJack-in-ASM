@@ -16,6 +16,12 @@ playerMoney: dw 1000
 computerMoney: dw 1000
 deck: db [0x00, 0x34]
 
+; Messages
+bet_msg: db "Place bet ($10 - $1000)"
+consent_msg: db "Continue playing? (Y/N)"
+lost_msg: db "You lost :("
+won_msg: db "You won!"
+
 def betInput {
     mov ah, 0x01
     int 0x21
