@@ -11,6 +11,7 @@ playerWins: dw 0
 playerHand: dw 0
 computerHand: dw 0
 money: dw 1000
+deck: db [0x00, 0x34]
 
 def betInput {
     mov ah, 0x01
