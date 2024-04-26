@@ -216,9 +216,9 @@ start:
     ;difficulty
     
 gameLoop:
-    ; Check number of cards pulled
     ; Check money 
     call checkMoney
+    ; Check number of cards pulled
     call checkCardAmount
     call playerTurn
     call computerTurn
