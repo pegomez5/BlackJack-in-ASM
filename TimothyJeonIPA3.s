@@ -24,12 +24,30 @@ lost_msg: db "You lost :("
 won_msg: db "You won!"
 
 def get_consent {
+
+    ; Print consent request
     mov ah, 0x13
     mov cx, 23
     mov bx, 0
     mov es, bx
-    mov bp, offset bet_msg
+    mov bp, offset consent_msg
     int 0x10
+    
+    ; Get input
+    mov ah, 0x0a
+    mov dx, offset plr_consent
+    mov si, dx
+    int 0x21
+    
+    ; Store input into ax for comparison
+    add si, 2
+    mov al, byte [si]
+
+    ; Compare input , if not continuing play, jmp to determine winner
+    mov bl, "N"
+    cmp al, bl
+    je determine_winner
+    ret
 }
 
 def betInput {
