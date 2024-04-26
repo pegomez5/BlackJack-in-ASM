@@ -189,6 +189,7 @@ def getCardValue {
     ret
 }
 
+;player turn
 def playerTurn {
     call betInput
     call randomIndex
@@ -198,6 +199,7 @@ def playerTurn {
     ret
 }
 
+;computer turn
 def computerTurn {
     call betInput
     call randomIndex
@@ -206,11 +208,13 @@ def computerTurn {
     call store_card
     ret
 }
-  
+
+;increments player win count
 playerWin:
     inc word [offset playerWins]
     jmp gameLoop
-    
+
+;increments computer win count
 computerWin:
     inc word [offset computerWins]
     jmp gameLoop
