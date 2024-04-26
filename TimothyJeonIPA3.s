@@ -150,7 +150,7 @@ playerWinsGame:
     ; Print stff
     
     mov ah, 0x13
-    mov cx, 23
+    mov cx, 8
     mov bx, 0
     mov es, bx
     mov bp, offset won_msg
@@ -161,7 +161,7 @@ computerWinsGame:
     ;print stuff
     
     mov ah, 0x13
-    mov cx, 23
+    mov cx, 11
     mov bx, 0
     mov es, bx
     mov bp, offset lost_msg
