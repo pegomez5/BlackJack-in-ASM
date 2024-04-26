@@ -165,6 +165,7 @@ gameLoop:
     call playerTurn
     call computerTurn
     call compareHandValues
+    jmp gameLoop
 
    
    
