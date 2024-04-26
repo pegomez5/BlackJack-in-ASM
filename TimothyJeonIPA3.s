@@ -44,7 +44,7 @@ def get_consent {
     mov al, byte [si]
 
     ; Compare input , if not continuing play, jmp to determine winner
-    mov bl, "N"
+    mov bl, 0x4e
     cmp al, bl
     je determine_winner
     ret
