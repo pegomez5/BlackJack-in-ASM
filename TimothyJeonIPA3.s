@@ -18,8 +18,11 @@ cardUsed: dw 0
 plr_consent: dw "N"
 decksUsed: dw 0
 deck: db [0x00, 0x34]
+bet_mode: dw "N"
+
 
 ; Messages
+mode_msg: db "Choose the CPU's betting mode (C, N, A)"     ; Conservative, Normal, Aggressive
 wealth_msg: db "How much money will you start out with?"
 decks_msg: db "How many decks will you use?"
 bet_msg: db "Place bet ($10 - $1000)"
@@ -62,10 +65,36 @@ def init_decks {
 }
 
 def init_betting_mode {
+    ; Ask betting mode
+    mov ah, 0x13
+    mov cx, 39
+    mov bx, 0
+    mov es, bx
+    mov bp, offset mode_msg
+    int 0x10
+    
+    ; Get input
+    mov ah, 0x0a
+    mov dx, offset decksUsed
+    mov si, dx
+    int 0x21
     ret
 }
 
 def init_difficulty {
+    ; Ask deck amount
+    mov ah, 0x13
+    mov cx, 28
+    mov bx, 0
+    mov es, bx
+    mov bp, offset bet_mode
+    int 0x10
+    
+    ; Get input
+    mov ah, 0x0a
+    mov dx, offset decksUsed
+    mov si, dx
+    int 0x21
     ret
 }
 
