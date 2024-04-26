@@ -155,7 +155,7 @@ def determineWinner {
     
     
 start:
-    ;difficulty
+    ;initial wealth
     ;number of card decks
     ;computer betting mode
     ;computer risk level
