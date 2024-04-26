@@ -164,13 +164,13 @@ def checkMoney {
     je determineWinner
 }
 
-def determineWinner {
+determineWinner:
     mov ax, word [offset playerWins]
     mov bx, word [offset computerWins]
     cmp ax, bx
     jg playerWinsGame
     jl computerWinsGame
-}
+
 
     
     
