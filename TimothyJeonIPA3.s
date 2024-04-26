@@ -117,13 +117,14 @@ computerLost:
     
 playerWin:
     inc word [offset playerWins]
-    
+    jmp start
     
 computerWin:
     inc word [offset computerWins]
+    jmp
     
 playerWinsGame:
-
+    
 computerWinsGame:
     
 def compareHandValues {
