@@ -194,12 +194,7 @@ def playerTurn {
     call randomIndex
     call getCardValue
     add byte [offset playerHandValue], dl
-    MOV bl, 16
-    MUL bl
-    ADD ax, dx
-    mov di, offset deck
-    add si, di
-    mov byte [si], al
+    call store_card
     ret
 }
 
@@ -208,12 +203,7 @@ def computerTurn {
     call randomIndex
     call getCardValue
     add byte [offset computerHandValue], dl
-    MOV bl, 16
-    MUL bl
-    ADD ax, dx
-    mov di, offset deck
-    add si, di
-    mov byte [si], al
+    call store_card
     ret
 }
   
