@@ -258,6 +258,7 @@ def compareHandValues {
     ret
 }
 
+;Checks if player or computer has no money.
 def checkMoney {
     mov ax, word [offset playerMoney]
     cmp ax, 0
@@ -267,6 +268,8 @@ def checkMoney {
     je determineWinner
 }
 
+;Checks the number of cards that have been pulled. 
+;If greater than 51, all the cards have been pulled.
 def checkCardAmount {
     mov ax, word [offset cardUsed]
     cmp ax, 51
