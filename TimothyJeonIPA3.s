@@ -15,6 +15,7 @@ computerHandValue: db 0
 playerMoney: dw 1000
 computerMoney: dw 1000
 cardUsed: dw 0
+plr_consent: dw "N"
 deck: db [0x00, 0x34]
 
 ; Messages
@@ -136,14 +137,7 @@ def computerTurn {
     mov byte [si], al
     ret
 }
-
-playerLost:
-    
-    
-computerLost:
-
-    
-    
+  
 playerWin:
     inc word [offset playerWins]
     jmp gameLoop
@@ -153,8 +147,26 @@ computerWin:
     jmp gameLoop
     
 playerWinsGame:
+    ; Print stff
+    
+    mov ah, 0x13
+    mov cx, 23
+    mov bx, 0
+    mov es, bx
+    mov bp, offset won_msg
+    int 0x10
+    jmp game_end
     
 computerWinsGame:
+    ;print stuff
+    
+    mov ah, 0x13
+    mov cx, 23
+    mov bx, 0
+    mov es, bx
+    mov bp, offset lost_msg
+    int 0x10
+    jmp game_end
     
 def compareHandValues {
     mov al, byte [offset playerHandValue]
@@ -162,9 +174,9 @@ def compareHandValues {
     
     ;check if gone over 21
     cmp al, 21
-    jg playerLost
+    jg computerWin
     cmp bl, 21
-    jg computerLost
+    jg playerWin
     
     ;cmp both player and computer
     cmp al, bl
@@ -187,10 +199,7 @@ determineWinner:
     mov bx, word [offset computerWins]
     cmp ax, bx
     jg playerWinsGame
-    jl computerWinsGame
-
-
-    
+    jl computerWinsGame    
     
 start:
     ;initial wealth
