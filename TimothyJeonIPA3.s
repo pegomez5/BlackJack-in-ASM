@@ -16,13 +16,48 @@ playerMoney: dw 1000
 computerMoney: dw 1000
 cardUsed: dw 0
 plr_consent: dw "N"
+decksUsed: dw 0
 deck: db [0x00, 0x34]
 
 ; Messages
+wealth_msg: db "How much money will you start out with?"
+decks_msg: db "How many decks will you use?"
 bet_msg: db "Place bet ($10 - $1000)"
 consent_msg: db "Continue playing? (Y/N)"
 lost_msg: db "You lost :("
 won_msg: db "You won!"
+
+def init_wealth {
+    ; Ask initial wealth
+    mov ah, 0x13
+    mov cx, 39
+    mov bx, 0
+    mov es, bx
+    mov bp, offset wealth_msg
+    int 0x10
+    
+    ; Get input
+    mov ah, 0x0a
+    mov dx, offset playerMoney
+    mov si, dx
+    int 0x21
+}
+
+def init_decks {
+    ; Ask deck amount
+    mov ah, 0x13
+    mov cx, 28
+    mov bx, 0
+    mov es, bx
+    mov bp, offset decks_msg
+    int 0x10
+    
+    ; Get input
+    mov ah, 0x0a
+    mov dx, offset decksUsed
+    mov si, dx
+    int 0x21
+}
 
 def get_consent {
 
