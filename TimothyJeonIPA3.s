@@ -22,8 +22,18 @@ consent_msg: db "Continue playing? (Y/N)"
 lost_msg: db "You lost :("
 won_msg: db "You won!"
 
+def get_consent {
+    mov ah, 0x13
+    mov cx, 23
+    mov bx, 0
+    mov es, bx
+    mov bp, offset bet_msg
+    int 0x10
+}
+
 def betInput {
     ; Ask user for bet amount
+    mov dx, 0
     mov ah, 0x13
     mov cx, 23
     mov bx, 0
@@ -162,12 +172,20 @@ start:
     ;difficulty
     
 gameLoop:
+    ; Check number of cards pulled
+    ; Check money 
+    
     call playerTurn
     call computerTurn
     call compareHandValues
+
+    ; Ask player to continue play
+    ; if yes, determine_winner
+    
+    
     jmp gameLoop
 
-   
+game_end:
    
     
 
