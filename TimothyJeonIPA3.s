@@ -8,13 +8,13 @@ a: dw 11 ;a value that is odd co-prime to m
 m: dw 4133 ;a large prime
 playerBet: dw 55 ;hexadecimal value of 55 is 37 shown in memory
 computerBet: dw 100
-playerWins: dw 0
-computerWins: dw 0
-playerHandValue: db 0
-computerHandValue: db 0
-playerMoney: dw 1000
-computerMoney: dw 1000
-cardUsed: dw 0
+playerWins: dw 0 ;tracks player wins
+computerWins: dw 0 ;tracks computer wins
+playerHandValue: db 0 ;amount of value in player's hand
+computerHandValue: db 0 ;amount of value in computer's hand
+playerMoney: dw 1000 ;amount player has
+computerMoney: dw 1000 ;amount computer has
+cardUsed: dw 0 ;counts amount of cards used from deck
 plr_consent: dw "N"
 decksUsed: dw 0
 deck: db [0x00, 0x34]
