@@ -289,10 +289,19 @@ determineWinner:
     
 start:
     ;initial wealth
+    call init_wealth
+    
     ;number of card decks
+    call init_decks
+    
     ;computer betting mode
+    call init_betting_mode
+    
     ;computer risk level
+    call init_risk_level
+    
     ;difficulty
+    call init_difficulty
     
 gameLoop:
     ; Check money 
