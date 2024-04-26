@@ -82,7 +82,7 @@ def init_betting_mode {
 }
 
 def init_difficulty {
-    ; Ask deck amount
+    ; Ask difficulty
     mov ah, 0x13
     mov cx, 28
     mov bx, 0
