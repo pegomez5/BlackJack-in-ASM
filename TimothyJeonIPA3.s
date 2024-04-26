@@ -218,7 +218,7 @@ gameLoop:
 
     ; Ask player to continue play
     ; if yes, determine_winner
-    
+    call get_consent
     
     jmp gameLoop
 
