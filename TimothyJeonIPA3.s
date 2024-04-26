@@ -47,7 +47,7 @@ def get_consent {
     ; Compare input , if not continuing play, jmp to determine winner
     mov bl, 0x4e
     cmp al, bl
-    je determine_winner
+    je determineWinner
     ret
 }
 
@@ -107,6 +107,7 @@ def getCardValue {
     sub ax, 1 ;subtract 1 from ax
     div bx ;divides ax by bx
     add dx, 1 ;adds 1 to dx
+    inc word [offset cardUsed]
     ret
 }
 
@@ -194,6 +195,12 @@ def checkMoney {
     je determineWinner
 }
 
+def checkCardAmount {
+    mov ax, word [offset cardUsed]
+    cmp ax, 51
+    jg determineWinner
+}
+
 determineWinner:
     mov ax, word [offset playerWins]
     mov bx, word [offset computerWins]
@@ -212,12 +219,13 @@ gameLoop:
     ; Check number of cards pulled
     ; Check money 
     call checkMoney
+    call checkCardAmount
     call playerTurn
     call computerTurn
     call compareHandValues
 
     ; Ask player to continue play
-    ; if yes, determine_winner
+    ; if no, determine_winner
     call get_consent
     
     jmp gameLoop
