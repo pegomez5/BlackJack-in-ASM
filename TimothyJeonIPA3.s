@@ -41,6 +41,7 @@ def init_wealth {
     mov dx, offset playerMoney
     mov si, dx
     int 0x21
+    ret
 }
 
 def init_decks {
@@ -57,6 +58,19 @@ def init_decks {
     mov dx, offset decksUsed
     mov si, dx
     int 0x21
+    ret
+}
+
+def init_betting_mode {
+    ret
+}
+
+def init_difficulty {
+    ret
+}
+
+def init_risk_level {
+    ret
 }
 
 def get_consent {
