@@ -11,7 +11,7 @@ game_loop:
     call computer_turn
 
     ; Determine winner and update money
-    call determine_winner
+    call compareHandValues
 
     ; Ask user to play next turn
     ; Implement input/output handling for user interaction
