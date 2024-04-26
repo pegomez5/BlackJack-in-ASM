@@ -4,6 +4,8 @@ start:
 
 ; Main game loop
 game_loop:
+    ; Check number of cards pulled
+
     ; Player's turn
     call player_turn
 
