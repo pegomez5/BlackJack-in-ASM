@@ -276,7 +276,7 @@ def checkCardAmount {
     jg determineWinner
 }
 
-;Game end which is only called if human or computer money = 0, no more cards in deck, or human indicates termination of game
+;Game end which is only called if human or computer money = 0, no more cards in deck, or human indicates termination of game.
 determineWinner:
     mov ax, word [offset playerWins]
     mov bx, word [offset computerWins]
