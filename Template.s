@@ -1,4 +1,4 @@
-
+; NOT MAIN CODE
 
 start:
     ; Game config
