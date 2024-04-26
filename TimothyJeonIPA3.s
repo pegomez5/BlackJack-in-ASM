@@ -14,6 +14,7 @@ playerHandValue: db 0
 computerHandValue: db 0
 playerMoney: dw 1000
 computerMoney: dw 1000
+cardUsed: dw 0
 deck: db [0x00, 0x34]
 
 ; Messages
@@ -154,6 +155,15 @@ def compareHandValues {
     ret
 }
 
+def checkMoney {
+    mov ax, word [offset playerMoney]
+    cmp ax, 0
+    je determineWinner
+    mov bx, word [offset computerMoney]
+    cmp bx, 0
+    je determineWinner
+}
+
 def determineWinner {
     mov ax, word [offset playerWins]
     mov bx, word [offset computerWins]
@@ -174,7 +184,7 @@ start:
 gameLoop:
     ; Check number of cards pulled
     ; Check money 
-    
+    call checkMoney
     call playerTurn
     call computerTurn
     call compareHandValues
