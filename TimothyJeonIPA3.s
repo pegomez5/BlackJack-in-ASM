@@ -117,11 +117,11 @@ computerLost:
     
 playerWin:
     inc word [offset playerWins]
-    jmp start
+    jmp gameLoop
     
 computerWin:
     inc word [offset computerWins]
-    jmp
+    jmp gameLoop
     
 playerWinsGame:
     
@@ -155,13 +155,16 @@ def determineWinner {
     
     
 start:
+    ;difficulty
+    ;number of card decks
+    ;computer betting mode
+    ;computer risk level
+    ;difficulty
+    
+gameLoop:
     call playerTurn
     call computerTurn
     call compareHandValues
-    
-    
-    
-
 
    
    
