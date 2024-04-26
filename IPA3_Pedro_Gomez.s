@@ -1,7 +1,13 @@
-start:
-    ; Game initialization
-    call deal_initial_hands
 
+
+start:
+    ; Game config
+    ; Difficulty
+    ; Starting money
+    
+outer_game_loop:
+    call deal_initial_hands
+    
 ; Main game loop
 game_loop:
     ; Check number of cards pulled
