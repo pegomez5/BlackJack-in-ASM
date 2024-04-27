@@ -167,7 +167,19 @@ def randomIndex {
 }
 
 ; Stores card value
-def store_card {
+def store_plr_card {
+    add byte [offset playerHandValue], dl
+    MOV bl, 16
+    MUL bl
+    ADD ax, dx
+    mov di, offset deck
+    add si, di
+    mov byte [si], al
+    ret
+}
+
+def store_cpu_card {
+    add byte [offset computerHandValue], dl
     MOV bl, 16
     MUL bl
     ADD ax, dx
@@ -196,8 +208,7 @@ def playerTurn {
     call betInput
     call randomIndex
     call getCardValue
-    add byte [offset playerHandValue], dl
-    call store_card
+    call store_plr_card
     ret
 }
 
@@ -206,8 +217,7 @@ def computerTurn {
     call betInput
     call randomIndex
     call getCardValue
-    add byte [offset computerHandValue], dl
-    call store_card
+    call store_cpu_card
     ret
 }
 
