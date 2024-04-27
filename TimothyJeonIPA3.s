@@ -9,6 +9,7 @@ m: dw 4133 ;a large prime
 playerBet: dw 55 ;hexadecimal value of 55 is 37 shown in memory
 computerBet: dw 100
 playerWins: dw 0 ;tracks player wins
+plrTurnInput: dw 0
 computerWins: dw 0 ;tracks computer wins
 playerHandValue: db 0 ;amount of value in player's hand
 computerHandValue: db 0 ;amount of value in computer's hand
@@ -23,6 +24,7 @@ bet_mode: dw "N"
 
 ; Messages
 mode_msg: db "Choose the CPU's betting mode (C, N, A)"     ; Conservative, Normal, Aggressive
+plr_turn_msg: db "Hit (H), Stand (S), Forfeit (F)"
 wealth_msg: db "How much money will you start out with?"
 decks_msg: db "How many decks will you use?"
 bet_msg: db "Place bet ($10 - $1000)"
