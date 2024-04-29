@@ -24,7 +24,7 @@ bet_mode: dw "N"
 
 ; Messages
 mode_msg: db "Choose the CPU's betting mode (C, N, A)"     ; Conservative, Normal, Aggressive
-plr_turn_msg: db "Hit (H), Stand (S), Forfeit (F)"
+plr_input_msg: db "Hit (H), Stand (S), Forfeit (F)"
 wealth_msg: db "How much money will you start out with?"
 decks_msg: db "How many decks will you use?"
 bet_msg: db "Place bet ($10 - $1000)"
@@ -101,6 +101,44 @@ def init_difficulty {
 }
 
 def init_risk_level {
+    ret
+}
+
+def getComputerInput {
+    ret
+}
+
+def getPlrInput { 
+    ; Ask H, S, F
+    mov ah, 0x13
+    mov cx, 31
+    mov bx, 0
+    mov es, bx
+    mov bp, offset plr_input_msg
+    int 0x10
+    
+    ; Get input
+    mov ah, 0x0a
+    mov dx, offset plrTurnInput
+    mov si, dx
+    int 0x21
+    
+    ; Store input into ax for comparison
+    add si, 2
+    mov al, byte [si]
+
+    ; Compare input , if F, jmp to computerWin
+    mov bl, 0x46
+    cmp al, bl
+    je computerWin
+
+    ; Compare input, if H, jmp to givePlrCard
+    mov bl 0x48
+    cmp al, bl
+    je givePlrCard
+
+    ; Otherwise, input is assumed to be S, meaning we can
+    ; continue the gameflow, moving onto the computers turn
     ret
 }
 
@@ -203,33 +241,15 @@ def getCardValue {
     ret
 }
 
-;player turn
-def playerTurn {
-    call betInput
-    call randomIndex
-    call getCardValue
-    call store_plr_card
-    ret
-}
-
-;computer turn
-def computerTurn {
-    call betInput
-    call randomIndex
-    call getCardValue
-    call store_cpu_card
-    ret
-}
-
 ;increments player win count
 playerWin:
     inc word [offset playerWins]
-    jmp gameLoop
+    jmp checks
 
 ;increments computer win count
 computerWin:
     inc word [offset computerWins]
-    jmp gameLoop
+    jmp checks
     
 playerWinsGame:
     ; Print stff
@@ -278,6 +298,7 @@ def checkMoney {
     mov bx, word [offset computerMoney]
     cmp bx, 0
     je determineWinner
+    ret
 }
 
 ;Checks the number of cards that have been pulled. 
@@ -286,6 +307,7 @@ def checkCardAmount {
     mov ax, word [offset cardUsed]
     cmp ax, 51
     jg determineWinner
+    ret
 }
 
 ;Game end which is only called if human or computer money = 0, no more cards in deck, or human indicates termination of game.
@@ -311,14 +333,22 @@ start:
     
     ;difficulty
     call init_difficulty
-    
-gameLoop:
+
+checks:
     ; Check money 
     call checkMoney
     ; Check number of cards pulled
     call checkCardAmount
-    call playerTurn
-    call computerTurn
+    
+playerTurn:
+    call betInput
+    call getPlrInput
+
+computerTurn:
+    call betInput
+    call getComputerInput     ; Function yet to be made
+
+gameLoop:
     call compareHandValues
 
     ; Ask player to continue play
@@ -326,6 +356,19 @@ gameLoop:
     call get_consent
     
     jmp gameLoop
+
+givePlayerCard:
+    call randomIndex
+    call getCardValue
+    call store_plr_card
+    jmp playerTurn
+
+giveComputerCard:
+    ; Implement computer betting 
+    call randomIndex
+    call getCardValue
+    call store_cpu_card
+    
 
 game_end:
    
