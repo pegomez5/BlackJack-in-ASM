@@ -133,9 +133,9 @@ def getPlrInput {
     je computerWin
 
     ; Compare input, if H, jmp to givePlrCard
-    mov bl 0x48
+    mov bl, 0x48
     cmp al, bl
-    je givePlrCard
+    je givePlayerCard
 
     ; Otherwise, input is assumed to be S, meaning we can
     ; continue the gameflow, moving onto the computers turn
@@ -372,9 +372,3 @@ giveComputerCard:
 
 game_end:
    
-    
-
-    
-    
-
-
