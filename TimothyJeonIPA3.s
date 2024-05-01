@@ -125,13 +125,13 @@ def getComputerInput {
 
     ; CPU Risk: Forfeit (al < 20), Hit (19 < al < 50), Stand (al > 49) 
     cmp al, 49
-    jg cpu_stand
+    jg gameloop
 
     cmp al, 19
-    jg cpu_hit
+    jg giveComputerCard
 
     cmp al, -1
-    jg gameloop
+    jg determineWinner
     
     ret
 }
