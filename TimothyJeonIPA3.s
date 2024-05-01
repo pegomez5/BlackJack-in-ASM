@@ -104,7 +104,35 @@ def init_risk_level {
     ret
 }
 
+;Gets the random index
+def computerRisk {
+}
+
 def getComputerInput {
+    ; Calculate random number between 0, 100
+    mov dx, 0
+    mov si, offset X_k ;moves offset of X_k to si
+    mov ax, word [si]  ;moves value of X_k to ax
+    mov bp, offset m   ;moves offset of m to bp
+    mov bx, word [bp]  ;moves value of m to bx
+    mov di, offset a   ;moves offset of a to di
+    mul word [di]      ;multplies X_k by a
+    div bx             ;divides (X_k * a) by m. dx stores remainder
+    mov word [si], dx  ;moves dx(remainder) to X_k
+    mov ax, dx         ;moves remainder to ax
+    mov cx, 100        ;moves 100 to cx where cx = 100
+    div cx             ;divides X_k by cx(100) where it'll be stored in al
+
+    ; CPU Risk: Forfeit (al < 20), Hit (19 < al < 50), Stand (al > 49) 
+    cmp al, 49
+    jg cpu_stand
+
+    cmp al, 19
+    jg cpu_hit
+
+    cmp al, -1
+    jg gameloop
+    
     ret
 }
 
@@ -181,8 +209,13 @@ def betInput {
 
     mov ah, 0x0a
     mov dx, offset playerBet
+    mov si, dx
     int 0x21
-    ;mov word [offset playerBet], ax
+
+    ; Store input into ax for comparison
+    add si, 2
+    mov al, byte [si]
+    
     ret
 }
 
@@ -244,12 +277,12 @@ def getCardValue {
 ;increments player win count
 playerWin:
     inc word [offset playerWins]
-    jmp checks
+    jmp beginRound
 
 ;increments computer win count
 computerWin:
     inc word [offset computerWins]
-    jmp checks
+    jmp beginRound
     
 playerWinsGame:
     ; Print stff
@@ -317,7 +350,8 @@ determineWinner:
     cmp ax, bx
     jg playerWinsGame
     jl computerWinsGame    
-    
+
+; ----------------- Game configuration -----------------
 start:
     ;initial wealth
     call init_wealth
@@ -333,12 +367,12 @@ start:
     
     ;difficulty
     call init_difficulty
-
-checks:
+; ----------------- Beginning of each round -----------------
+beginRound:
     ; Check money 
     call checkMoney
     ; Check number of cards pulled
-    call checkCardAmount
+    call checkCardAmount.
     
 playerTurn:
     call betInput
@@ -346,7 +380,7 @@ playerTurn:
 
 computerTurn:
     call betInput
-    call getComputerInput     ; Function yet to be made
+    call getComputerInput
 
 gameLoop:
     call compareHandValues
@@ -356,6 +390,9 @@ gameLoop:
     call get_consent
     
     jmp gameLoop
+; ----------------- End of round -----------------
+
+; ----------------- Conditional labels -----------------
 
 givePlayerCard:
     call randomIndex
@@ -368,7 +405,8 @@ giveComputerCard:
     call randomIndex
     call getCardValue
     call store_cpu_card
+    jmp computerTurn
     
-
+; ----------------- End of game -----------------
 game_end:
    
