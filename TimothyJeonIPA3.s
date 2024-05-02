@@ -100,14 +100,6 @@ def init_difficulty {
     ret
 }
 
-def init_risk_level {
-    ret
-}
-
-;Gets the random index
-def computerRisk {
-}
-
 def getComputerInput {
     ; Calculate random number between 0, 100
     mov dx, 0
@@ -122,10 +114,10 @@ def getComputerInput {
     mov ax, dx         ;moves remainder to ax
     mov cx, 100        ;moves 100 to cx where cx = 100
     div cx             ;divides X_k by cx(100) where it'll be stored in al
-
+    
     ; CPU Risk: Forfeit (al < 20), Hit (19 < al < 50), Stand (al > 49) 
     cmp al, 49
-    jg gameloop
+    jg gameLoop
 
     cmp al, 19
     jg giveComputerCard
@@ -198,6 +190,7 @@ def get_consent {
 }
 
 def betInput {
+    ; ----------------- Player bet -----------------
     ; Ask user for bet amount
     mov dx, 0
     mov ah, 0x13
@@ -212,9 +205,31 @@ def betInput {
     mov si, dx
     int 0x21
 
-    ; Store input into ax for comparison
-    add si, 2
-    mov al, byte [si]
+    ; Store input into ax for comparison 
+    add si, 2 
+    mov al, byte [si] 
+
+    ; ----------------- CPU bet ----------------- 
+    
+    ; If cpu has less than player bet amount, it must bet all it has left
+    mov di, offset computerMoney
+    cmp byte [di], byte [dx]
+    jl cpu_bet_all
+
+    ; get current mode for comparison
+    mov cx, word [offset currentMode]
+    
+    ; If mode is C, jump to conservative bet 
+    cmp cx, 0x43
+    je conservativeBet
+    
+    ; If mode is A, jump to aggressive bet 
+    cmp cx, 0x41
+    je aggressiveBet
+
+    ; If normal, CPU bet = Player bet
+    mov di, offset computerBet 
+    mov byte [di], al 
     
     ret
 }
@@ -235,7 +250,7 @@ def randomIndex {
     mov cx, 52 ;moves 52 to cx where cx = 52
     div cx ;divides X_k by cx(52) where it'll be stored in ax
     ret
-}
+} 
 
 ; Stores card value
 def store_plr_card {
@@ -247,7 +262,7 @@ def store_plr_card {
     add si, di
     mov byte [si], al
     ret
-}
+} 
 
 def store_cpu_card {
     add byte [offset computerHandValue], dl
@@ -276,8 +291,8 @@ def getCardValue {
 
 ;increments player win count
 playerWin:
-    inc word [offset playerWins]
-    jmp beginRound
+    inc word [offset playerWins] 
+    jmp beginRound               
 
 ;increments computer win count
 computerWin:
@@ -332,16 +347,16 @@ def checkMoney {
     cmp bx, 0
     je determineWinner
     ret
-}
+} 
 
-;Checks the number of cards that have been pulled. 
-;If greater than 51, all the cards have been pulled.
+; Checks the number of cards that have been pulled. 
+; If greater than 51, all the cards have been pulled.
 def checkCardAmount {
     mov ax, word [offset cardUsed]
     cmp ax, 51
     jg determineWinner
     ret
-}
+} 
 
 ;Game end which is only called if human or computer money = 0, no more cards in deck, or human indicates termination of game.
 determineWinner:
@@ -372,14 +387,13 @@ beginRound:
     ; Check money 
     call checkMoney
     ; Check number of cards pulled
-    call checkCardAmount.
+    call checkCardAmount
+    call betInput
     
 playerTurn:
-    call betInput
     call getPlrInput
 
 computerTurn:
-    call betInput
     call getComputerInput
 
 gameLoop:
@@ -406,6 +420,33 @@ giveComputerCard:
     call getCardValue
     call store_cpu_card
     jmp computerTurn
+
+cpu_bet_all:
+    ; Load computer money into computer bet
+    mov dx, offset computerBet
+    mov byte [dx], byte [di]
+    mov byte [di], 0
+    jmp playerTurn
+
+conservativeBet:
+    ; user bet input is expected to be stored in al
+    mov dx, 0
+    mov bx, 80
+    mov cx, 100
+    mul bx
+    div cx
+    
+    jmp playerTurn
+    
+aggressiveBet:
+    ; user bet input is expected to be stored in al
+    mov dx, 0
+    mov bx, 120
+    mov cx, 100
+    mul bx
+    div cx
+    
+    jmp playerTurn
     
 ; ----------------- End of game -----------------
 game_end:
