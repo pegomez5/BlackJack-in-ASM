@@ -442,7 +442,7 @@ conservativeBet:
 aggressiveBet:
     ; user bet input is expected to be stored in al
     mov dx, 0
-    mov bx, 120
+    mov bx, 130
     mov cx, 100
     mul bx
     div cx
