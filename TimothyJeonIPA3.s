@@ -210,14 +210,15 @@ def betInput {
     mov al, byte [si] 
 
     ; ----------------- CPU bet ----------------- 
+    mov bl, byte [di]
     
     ; If cpu has less than player bet amount, it must bet all it has left
     mov di, offset computerMoney
-    cmp byte [di], byte [dx]
+    cmp bl, al
     jl cpu_bet_all
 
     ; get current mode for comparison
-    mov cx, word [offset currentMode]
+    mov cx, word [offset bet_mode]
     
     ; If mode is C, jump to conservative bet 
     cmp cx, 0x43
@@ -378,7 +379,7 @@ start:
     call init_betting_mode
     
     ;computer risk level
-    call init_risk_level
+    ;call init_risk_level
     
     ;difficulty
     call init_difficulty
@@ -423,9 +424,9 @@ giveComputerCard:
 
 cpu_bet_all:
     ; Load computer money into computer bet
-    mov dx, offset computerBet
-    mov byte [dx], byte [di]
-    mov byte [di], 0
+    mov dx, word [offset computerBet]
+    mov dx, word [di]
+    mov word [di], 0
     jmp playerTurn
 
 conservativeBet:
@@ -450,4 +451,3 @@ aggressiveBet:
     
 ; ----------------- End of game -----------------
 game_end:
-   
