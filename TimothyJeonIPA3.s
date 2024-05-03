@@ -344,7 +344,7 @@ def randomIndex {
 
 ; Stores card value
 def store_plr_card {
-    add byte [offset playerHandValue], dl
+    add word [offset playerHandValue], dx
     MOV bl, 16
     MUL bl
     ADD ax, dx
@@ -355,7 +355,7 @@ def store_plr_card {
 } 
 
 def store_cpu_card {
-    add byte [offset computerHandValue], dl
+    add word [offset computerHandValue], dx
     MOV bl, 16
     MUL bl
     ADD ax, dx
@@ -455,11 +455,11 @@ def checkCardAmount {
 def dealInitialHands {
     call randomIndex
     call getCardValue
-    add word [offset playerHandValue], dx
+    ;add word [offset playerHandValue], dx
     call store_plr_card
     call randomIndex
     call getCardValue
-    add word [offset playerHandValue], dx
+    ;add word [offset playerHandValue], dx
     call store_plr_card
 
     mov al, byte [offset playerHandValue]
@@ -469,11 +469,11 @@ def dealInitialHands {
     
     call randomIndex
     call getCardValue
-    add word [offset computerHandValue], dx
+    ;add word [offset computerHandValue], dx
     call store_cpu_card
     call randomIndex
     call getCardValue
-    add word [offset computerHandValue], dx
+    ;add word [offset computerHandValue], dx
     call store_cpu_card
 
     mov al, byte [offset computerHandValue]
@@ -541,7 +541,6 @@ gameLoop:
 givePlayerCard:
     call randomIndex
     call getCardValue
-    add word [offset playerHandValue], dx
     call store_plr_card
 
     mov al, byte [offset playerHandValue]
@@ -555,7 +554,6 @@ giveComputerCard:
     ; Implement computer betting 
     call randomIndex
     call getCardValue
-    add word [offset computerHandValue], dx
     call store_cpu_card
     
     mov al, byte [offset computerHandValue]
