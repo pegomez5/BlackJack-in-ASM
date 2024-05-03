@@ -301,8 +301,27 @@ def betInput {
     ; If normal, CPU bet = Player bet
     mov di, offset computerBet 
     mov word [di], ax 
-    
     ret
+    
+    conservativeBet:
+        ; user bet input is expected to be stored in al
+        mov dx, 0
+        mov bx, 80
+        mov cx, 100
+        mul bx
+        div cx
+        mov word [offset computerBet], ax
+        ret
+        
+    aggressiveBet:
+        ; user bet input is expected to be stored in al
+        mov dx, 0
+        mov bx, 130
+        mov cx, 100
+        mul bx
+        div cx
+        mov word [offset computerBet], ax
+        ret
 }
 
 ;3.1. Representing cards, bets and wins on screen
@@ -432,16 +451,20 @@ def checkCardAmount {
 def dealInitialHands {
     call randomIndex
     call getCardValue
+    add word [offset playerHandValue], dx
     call store_plr_card
     call randomIndex
     call getCardValue
+    add word [offset playerHandValue], dx
     call store_plr_card
     
     call randomIndex
     call getCardValue
+    add word [offset computerHandValue], dx
     call store_cpu_card
     call randomIndex
     call getCardValue
+    add word [offset computerHandValue], dx
     call store_cpu_card
 }
 
@@ -476,8 +499,9 @@ beginRound:
     call checkMoney
     ; Check number of cards pulled
     call checkCardAmount
-    call betInput
     call dealInitialHands
+    call betInput
+   
     
     
 playerTurn:
@@ -501,6 +525,7 @@ gameLoop:
 givePlayerCard:
     call randomIndex
     call getCardValue
+    add word [offset playerHandValue], dx
     call store_plr_card
     jmp playerTurn
 
@@ -508,6 +533,7 @@ giveComputerCard:
     ; Implement computer betting 
     call randomIndex
     call getCardValue
+    add word [offset computerHandValue], dx
     call store_cpu_card
     jmp computerTurn
 
@@ -518,27 +544,7 @@ cpu_bet_all:
     mov word [di], 0
     jmp playerTurn
 
-conservativeBet:
-    ; user bet input is expected to be stored in al
-    mov dx, 0
-    mov bx, 80
-    mov cx, 100
-    mul bx
-    div cx
-    mov word [offset computerBet], ax
-    
-    jmp playerTurn
-    
-aggressiveBet:
-    ; user bet input is expected to be stored in al
-    mov dx, 0
-    mov bx, 120
-    mov cx, 100
-    mul bx
-    div cx
-    mov word [offset computerBet], ax
-    
-    jmp playerTurn
+
     
 ; ----------------- End of game -----------------
 game_end:
