@@ -383,11 +383,13 @@ def getCardValue {
 playerWin:
     inc word [offset playerWins] 
     mov word [offset playerHandValue], 0x0000
+    mov word [offset computerHandValue], 0x0000
     jmp beginRound               
 
 ;increments computer win count
 computerWin:
     inc word [offset computerWins]
+    mov word [offset playerHandValue], 0x0000
     mov word [offset computerHandValue], 0x0000
     jmp beginRound
     
