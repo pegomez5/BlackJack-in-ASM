@@ -2,6 +2,8 @@
 ;Timothy Jeon
 
 ;data
+arr: db [0x00, 0x0a]
+playerMoney: dw 1000 ;amount player has
 X_0: dw 7 ;initial value
 X_k: dw 1 ;accumulated value from prior iteration
 a: dw 11 ;a value that is odd co-prime to m
@@ -9,28 +11,51 @@ m: dw 4133 ;a large prime
 playerBet: dw 55 ;hexadecimal value of 55 is 37 shown in memory
 computerBet: dw 100
 playerWins: dw 0 ;tracks player wins
-plrTurnInput: dw 0
 computerWins: dw 0 ;tracks computer wins
-playerHandValue: db 0 ;amount of value in player's hand
-computerHandValue: db 0 ;amount of value in computer's hand
-playerMoney: dw 1000 ;amount player has
-computerMoney: dw 1000 ;amount computer has
-cardUsed: dw 0 ;counts amount of cards used from deck
-plr_consent: dw "N"
+playerHandValue: dw 0 ;amount of value in player's hand
+computerHandValue: dw 0 ;amount of value in computer's hand
 decksUsed: dw 0
+computerMoney: dw 0 ;amount computer has
+cardUsed: dw 0 ;counts amount of cards used from deck
+plr_consent: dw 0x02
+difficulty: dw 0x02
+bet_mode: dw 0x01
 deck: db [0x00, 0x34]
-bet_mode: dw "N"
 
 
 ; Messages
-mode_msg: db "Choose the CPU's betting mode (C, N, A)"     ; Conservative, Normal, Aggressive
+mode_msg: db "Choose the CPU's betting mode Conservative (1), Normal (2), Aggressive (3)"     ; Conservative, Normal, Aggressive
+diff_msg: db "Choose difficulty: Easy (1), Normal (2), Hard (3)" 
 plr_input_msg: db "Hit (H), Stand (S), Forfeit (F)"
 wealth_msg: db "How much money will you start out with?"
 decks_msg: db "How many decks will you use?"
 bet_msg: db "Place bet ($10 - $1000)"
-consent_msg: db "Continue playing? (Y/N)"
+consent_msg: db "Continue playing? Yes (1), No (2)"
 lost_msg: db "You lost :("
 won_msg: db "You won!"
+plrTurnInput: dw 0
+
+; We'll need a function to run after getting the string inputs
+; to traverse through the strings and translate their values
+; into numbers that we can store in words/bytes. 
+def inputToMem {
+    mov ax, 0
+    mov bl, 10
+    begin:
+        mov cl, byte [si]
+        cmp cl, 0x00
+        je done
+        
+        sub cl, 0x30
+        mul bl
+        add ax, cx
+        mov byte [si], 0
+        inc si
+        jmp begin
+    done:
+        mov word [di], ax
+        ret
+}
 
 def init_wealth {
     ; Ask initial wealth
@@ -43,9 +68,14 @@ def init_wealth {
     
     ; Get input
     mov ah, 0x0a
-    mov dx, offset playerMoney
+    mov dx, offset arr
     mov si, dx
     int 0x21
+    
+    add si, 2
+    mov di, offset playerMoney
+    call inputToMem
+    
     ret
 }
 
@@ -60,16 +90,20 @@ def init_decks {
     
     ; Get input
     mov ah, 0x0a
-    mov dx, offset decksUsed
+    mov dx, offset arr
     mov si, dx
     int 0x21
+    
+    add si, 2
+    mov di, offset decksUsed
+    call inputToMem
     ret
 }
 
 def init_betting_mode {
     ; Ask betting mode
     mov ah, 0x13
-    mov cx, 39
+    mov cx, 74
     mov bx, 0
     mov es, bx
     mov bp, offset mode_msg
@@ -77,27 +111,60 @@ def init_betting_mode {
     
     ; Get input
     mov ah, 0x0a
-    mov dx, offset decksUsed
+    mov dx, offset arr
     mov si, dx
     int 0x21
+    
+    add si, 2
+    mov di, offset bet_mode
+    call inputToMem
     ret
 }
 
 def init_difficulty {
     ; Ask difficulty
     mov ah, 0x13
-    mov cx, 28
+    mov cx, 49
     mov bx, 0
     mov es, bx
-    mov bp, offset bet_mode
+    mov bp, offset diff_msg
     int 0x10
     
     ; Get input
     mov ah, 0x0a
-    mov dx, offset decksUsed
+    mov dx, offset arr
     mov si, dx
     int 0x21
-    ret
+    
+    add si, 2
+    mov di, offset difficulty
+    call inputToMem
+    mov dx, word[offset playerMoney]
+    mov word [offset computerMoney], dx
+    cmp ax, 0x02
+    je end
+    cmp ax, 0x03
+    je hard
+
+    mov ax, word [offset playerMoney]
+    easy:
+        mov dx, 0
+        mov bx, 50
+        mov cx, 100
+        mul bx
+        div cx
+        mov word [offset computerMoney], ax
+        ret
+    hard:
+        mov dx, 0
+        mov bx, 150
+        mov cx, 100
+        mul bx
+        div cx
+        mov word [offset computerMoney], ax
+        ret
+    end:
+        ret
 }
 
 def getComputerInput {
@@ -166,7 +233,7 @@ def get_consent {
 
     ; Print consent request
     mov ah, 0x13
-    mov cx, 23
+    mov cx, 33
     mov bx, 0
     mov es, bx
     mov bp, offset consent_msg
@@ -174,16 +241,17 @@ def get_consent {
     
     ; Get input
     mov ah, 0x0a
-    mov dx, offset plr_consent
+    mov dx, offset arr
     mov si, dx
     int 0x21
     
     ; Store input into ax for comparison
     add si, 2
-    mov al, byte [si]
+    mov di, offset plr_consent
+    call inputToMem
 
     ; Compare input , if not continuing play, jmp to determine winner
-    mov bl, 0x4e
+    mov bl, 0x02
     cmp al, bl
     je determineWinner
     ret
@@ -201,36 +269,36 @@ def betInput {
     int 0x10
 
     mov ah, 0x0a
-    mov dx, offset playerBet
+    mov dx, offset arr
     mov si, dx
     int 0x21
 
-    ; Store input into ax for comparison 
-    add si, 2 
-    mov al, byte [si] 
+    add si, 2
+    mov di, offset playerBet
+    call inputToMem 
 
     ; ----------------- CPU bet ----------------- 
-    mov bl, byte [di]
     
     ; If cpu has less than player bet amount, it must bet all it has left
-    mov di, offset computerMoney
-    cmp bl, al
+    mov ax, word [di]
+    mov bx, word [offset computerMoney]
+    cmp bx, ax
     jl cpu_bet_all
 
     ; get current mode for comparison
     mov cx, word [offset bet_mode]
     
     ; If mode is C, jump to conservative bet 
-    cmp cx, 0x43
+    cmp cx, 0x01
     je conservativeBet
     
     ; If mode is A, jump to aggressive bet 
-    cmp cx, 0x41
+    cmp cx, 0x03
     je aggressiveBet
 
     ; If normal, CPU bet = Player bet
     mov di, offset computerBet 
-    mov byte [di], al 
+    mov word [di], ax 
     
     ret
 }
@@ -365,7 +433,8 @@ determineWinner:
     mov bx, word [offset computerWins]
     cmp ax, bx
     jg playerWinsGame
-    jl computerWinsGame    
+    jl computerWinsGame  
+    ;je tielabel
 
 ; ----------------- Game configuration -----------------
 start:
@@ -436,18 +505,21 @@ conservativeBet:
     mov cx, 100
     mul bx
     div cx
+    mov word [offset computerBet], ax
     
     jmp playerTurn
     
 aggressiveBet:
     ; user bet input is expected to be stored in al
     mov dx, 0
-    mov bx, 130
+    mov bx, 120
     mov cx, 100
     mul bx
     div cx
+    mov word [offset computerBet], ax
     
     jmp playerTurn
     
 ; ----------------- End of game -----------------
 game_end:
+   
