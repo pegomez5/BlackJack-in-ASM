@@ -3,6 +3,8 @@
 ;Blackjack
 
 ;data
+; Player hand and computer hand are the very first things in memory so that they 
+; may be easier to find during play
 playerHandValue: dw 0 ;amount of value in player's hand
 computerHandValue: dw 0 ;amount of value in computer's hand
 arr: db [0x00, 0x0a]
