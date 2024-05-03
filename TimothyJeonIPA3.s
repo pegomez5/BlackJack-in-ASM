@@ -457,6 +457,11 @@ def dealInitialHands {
     call getCardValue
     add word [offset playerHandValue], dx
     call store_plr_card
+
+    mov al, byte [offset playerHandValue]
+    ;check if gone over 21
+    cmp al, 21
+    jg computerWin
     
     call randomIndex
     call getCardValue
@@ -466,6 +471,13 @@ def dealInitialHands {
     call getCardValue
     add word [offset computerHandValue], dx
     call store_cpu_card
+
+    mov al, byte [offset computerHandValue]
+    ;check if gone over 21
+    cmp al, 21
+    jg playerWin
+
+    ret
 }
 
 ;Game end which is only called if human or computer money = 0, no more cards in deck, or human indicates termination of game.
@@ -527,6 +539,12 @@ givePlayerCard:
     call getCardValue
     add word [offset playerHandValue], dx
     call store_plr_card
+
+    mov al, byte [offset playerHandValue]
+    ;check if gone over 21
+    cmp al, 21
+    jg computerWin
+    
     jmp playerTurn
 
 giveComputerCard:
@@ -535,6 +553,12 @@ giveComputerCard:
     call getCardValue
     add word [offset computerHandValue], dx
     call store_cpu_card
+    
+    mov al, byte [offset computerHandValue]
+    ;check if gone over 21
+    cmp al, 21
+    jg playerWin
+    
     jmp computerTurn
 
 cpu_bet_all:
