@@ -1,7 +1,10 @@
 ;CS274
-;Timothy Jeon
+;Timothy Jeon and Pedro Gomez
+;Blackjack
 
 ;data
+playerHandValue: dw 0 ;amount of value in player's hand
+computerHandValue: dw 0 ;amount of value in computer's hand
 arr: db [0x00, 0x0a]
 playerMoney: dw 1000 ;amount player has
 X_0: dw 7 ;initial value
@@ -12,8 +15,6 @@ playerBet: dw 55 ;hexadecimal value of 55 is 37 shown in memory
 computerBet: dw 100
 playerWins: dw 0 ;tracks player wins
 computerWins: dw 0 ;tracks computer wins
-playerHandValue: dw 0 ;amount of value in player's hand
-computerHandValue: dw 0 ;amount of value in computer's hand
 decksUsed: dw 0
 computerMoney: dw 0 ;amount computer has
 cardUsed: dw 0 ;counts amount of cards used from deck
@@ -38,6 +39,7 @@ plrTurnInput: dw 0
 ; We'll need a function to run after getting the string inputs
 ; to traverse through the strings and translate their values
 ; into numbers that we can store in words/bytes. 
+
 def inputToMem {
     mov ax, 0
     mov bl, 10
@@ -427,6 +429,22 @@ def checkCardAmount {
     ret
 } 
 
+def dealInitialHands {
+    call randomIndex
+    call getCardValue
+    call store_plr_card
+    call randomIndex
+    call getCardValue
+    call store_plr_card
+    
+    call randomIndex
+    call getCardValue
+    call store_cpu_card
+    call randomIndex
+    call getCardValue
+    call store_cpu_card
+}
+
 ;Game end which is only called if human or computer money = 0, no more cards in deck, or human indicates termination of game.
 determineWinner:
     mov ax, word [offset playerWins]
@@ -459,6 +477,8 @@ beginRound:
     ; Check number of cards pulled
     call checkCardAmount
     call betInput
+    call dealInitialHands
+    
     
 playerTurn:
     call getPlrInput
@@ -522,4 +542,3 @@ aggressiveBet:
     
 ; ----------------- End of game -----------------
 game_end:
-   
