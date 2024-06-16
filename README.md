@@ -1,5 +1,4 @@
-<!-- Padding -->
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
 holy smokes <br />
         .--'''''''''--. <br />
      .'      .---.      '. <br />
